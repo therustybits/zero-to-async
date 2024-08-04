@@ -6,7 +6,7 @@ mod channel;
 mod executor;
 mod gpiote;
 mod led;
-mod timer;
+mod time;
 
 use core::pin::pin;
 
@@ -28,7 +28,7 @@ use microbit::{
 };
 use panic_rtt_target as _;
 use rtt_target::rtt_init_print;
-use timer::Ticker;
+use time::Ticker;
 
 #[entry]
 fn main() -> ! {
@@ -70,7 +70,7 @@ async fn led_task(
             direction = receiver.receive().fuse() => {
                 blinker.shift(direction);
             }
-            _ = timer::wait_for(500.millis()).fuse() => {}
+            _ = time::wait_for(500.millis()).fuse() => {}
         }
     }
 }
@@ -85,7 +85,7 @@ async fn button_task(
     loop {
         input.wait_for(PinState::Low).await;
         sender.send(direction);
-        timer::wait_for(100.millis()).await;
+        time::wait_for(100.millis()).await;
         input.wait_for(PinState::High).await;
     }
 }

@@ -36,7 +36,7 @@ impl LedRow {
         rprintln!("Blinking LED {}", self.active_col);
         #[cfg(feature = "trigger-overflow")]
         {
-            use crate::timer::Ticker;
+            use crate::time::Ticker;
             let time = Ticker::now();
             rprintln!(
                 "Time: 0x{:x} ticks, {} ms",

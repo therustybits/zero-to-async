@@ -48,25 +48,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
-name = "ch0_start"
-version = "0.1.0"
-dependencies = [
- "cortex-m",
- "cortex-m-rt",
- "critical-section",
- "embassy-executor",
- "embassy-nrf",
- "embassy-sync 0.6.0",
- "embassy-time",
- "embedded-hal 1.0.0",
- "fugit",
- "futures",
- "heapless",
- "panic-rtt-target",
- "rtt-target",
-]
-
-[[package]]
 name = "cortex-m"
 version = "0.7.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -811,4 +792,23 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "de437e2a6208b014ab52972a27e59b33fa2920d3e00fe05026167a1c509d19cc"
 dependencies = [
  "vcell",
+]
+
+[[package]]
+name = "zero-to-async"
+version = "0.1.0"
+dependencies = [
+ "cortex-m",
+ "cortex-m-rt",
+ "critical-section",
+ "embassy-executor",
+ "embassy-nrf",
+ "embassy-sync 0.6.0",
+ "embassy-time",
+ "embedded-hal 1.0.0",
+ "fugit",
+ "futures",
+ "heapless",
+ "panic-rtt-target",
+ "rtt-target",
 ]

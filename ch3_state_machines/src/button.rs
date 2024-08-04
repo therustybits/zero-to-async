@@ -4,7 +4,7 @@ use embedded_hal::digital::InputPin;
 use fugit::ExtU64;
 use microbit::hal::gpio::{Floating, Input, Pin};
 
-use crate::timer::{Ticker, Timer};
+use crate::time::{Ticker, Timer};
 
 #[derive(Clone, Copy)]
 pub enum ButtonDirection {
@@ -46,7 +46,7 @@ impl<'a> ButtonTask<'a> {
             ButtonState::WaitForPress => {
                 if self.pin.is_low().unwrap() {
                     self.event.set(Some(self.direction));
-                    self.state = ButtonState::Debounce(self.ticker.get_timer(100.millis()));
+                    self.state = ButtonState::Debounce(Timer::new(100.millis(), &self.ticker));
                 }
             }
             ButtonState::Debounce(ref timer) => {

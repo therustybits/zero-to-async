@@ -4,7 +4,7 @@ use embedded_hal::digital::InputPin;
 use fugit::ExtU64;
 use microbit::hal::gpio::{Floating, Input, Pin};
 
-use crate::timer::Timer;
+use crate::time::Timer;
 
 #[derive(Clone, Copy)]
 pub enum ButtonDirection {

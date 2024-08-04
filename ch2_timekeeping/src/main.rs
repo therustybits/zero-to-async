@@ -1,14 +1,14 @@
 #![no_std]
 #![no_main]
 
-mod timer;
+mod time;
 
 use cortex_m_rt::entry;
 use embedded_hal::{
     delay::DelayNs,
     digital::{InputPin, OutputPin, StatefulOutputPin},
 };
-use microbit::{hal::Timer, Board};
+use microbit::{gpio::NUM_COLS, hal::Timer, Board};
 use panic_rtt_target as _;
 use rtt_target::rtt_init_print;
 

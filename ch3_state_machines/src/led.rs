@@ -10,7 +10,7 @@ use rtt_target::rprintln;
 
 use crate::{
     button::ButtonDirection,
-    timer::{Ticker, Timer},
+    time::{Ticker, Timer},
 };
 
 enum LedState<'a> {
@@ -61,7 +61,7 @@ impl<'a> LedTask<'a> {
             LedState::Toggle => {
                 rprintln!("Blinking LED {}", self.active_col);
                 self.col[self.active_col].toggle().ok();
-                self.state = LedState::Wait(self.ticker.get_timer(500.millis()));
+                self.state = LedState::Wait(Timer::new(500.millis(), &self.ticker));
             }
             LedState::Wait(ref timer) => {
                 if timer.is_ready() {

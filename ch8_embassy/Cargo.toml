@@ -1,5 +1,5 @@
 [package]
-name = "ch0_start"
+name = "zero-to-async"
 version = "0.1.0"
 edition = "2021"
 

@@ -9,7 +9,7 @@ use crate::{
     channel::Sender,
     future::{OurFuture, Poll},
     gpiote::InputChannel,
-    timer::Timer,
+    time::Timer,
 };
 
 #[derive(Clone, Copy)]

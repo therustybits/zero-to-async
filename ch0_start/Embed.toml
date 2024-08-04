@@ -8,4 +8,4 @@ halt_afterwards = false
 enabled = false
 
 [default.rtt]
-enabled = false
+enabled = true

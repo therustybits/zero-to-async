@@ -1,5 +1,5 @@
 [package]
-name = "ch0_start"
+name = "zero-to-async"
 version = "0.1.0"
 edition = "2021"
 
@@ -9,7 +9,9 @@ cortex-m-rt = "0.7.3"
 critical-section = "1.1.2"
 embedded-hal = "1.0.0"
 fugit = "0.3.7"
-futures = { version = "0.3.30", default-features = false, features = ["async-await"] }
+futures = { version = "0.3.30", default-features = false, features = [
+    "async-await",
+] }
 heapless = { version = "0.8.0", features = ["portable-atomic"] }
 microbit-v2 = "0.15.0"
 panic-rtt-target = "0.1.3"

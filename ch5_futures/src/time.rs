@@ -190,7 +190,7 @@ fn RTC0() {
         let rtc = rm_rtc.as_mut().unwrap();
         if rtc.is_event_triggered(RtcInterrupt::Overflow) {
             rtc.reset_event(RtcInterrupt::Overflow);
-            TICKER.ovf_count.fetch_add(1, Ordering::Release);
+            TICKER.ovf_count.fetch_add(1, Ordering::Relaxed);
         }
         if rtc.is_event_triggered(RtcInterrupt::Compare0) {
             rtc.reset_event(RtcInterrupt::Compare0);

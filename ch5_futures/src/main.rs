@@ -7,7 +7,7 @@ mod executor;
 mod future;
 mod gpiote;
 mod led;
-mod timer;
+mod time;
 
 use button::{ButtonDirection, ButtonTask};
 use channel::Channel;
@@ -17,7 +17,7 @@ use led::LedTask;
 use microbit::{hal::gpiote::Gpiote, Board};
 use panic_rtt_target as _;
 use rtt_target::rtt_init_print;
-use timer::Ticker;
+use time::Ticker;
 
 #[entry]
 fn main() -> ! {

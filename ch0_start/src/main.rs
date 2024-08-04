@@ -7,10 +7,12 @@ use embedded_hal::{
     digital::{OutputPin, StatefulOutputPin},
 };
 use microbit::{hal::Timer, Board};
-use panic_halt as _;
+use panic_rtt_target as _;
+use rtt_target::rtt_init_print;
 
 #[entry]
 fn main() -> ! {
+    rtt_init_print!();
     let mut board = Board::take().unwrap();
     let mut timer = Timer::new(board.TIMER0);
     let _ = board.display_pins.col1.set_low();

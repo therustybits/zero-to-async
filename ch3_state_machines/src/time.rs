@@ -10,7 +10,7 @@ pub struct Timer<'a> {
 }
 
 impl<'a> Timer<'a> {
-    fn new(duration: TickDuration, ticker: &'a Ticker) -> Self {
+    pub fn new(duration: TickDuration, ticker: &'a Ticker) -> Self {
         Self {
             ticker,
             end_time: ticker.now() + duration,
@@ -42,9 +42,5 @@ impl Ticker {
 
     pub fn now(&self) -> TickInstant {
         TickInstant::from_ticks(self.rtc.get_counter() as u64)
-    }
-
-    pub fn get_timer(&self, duration: TickDuration) -> Timer {
-        Timer::new(duration, &self)
     }
 }

@@ -3,7 +3,7 @@
 
 mod button;
 mod led;
-mod timer;
+mod time;
 
 use core::cell::Cell;
 
@@ -14,7 +14,7 @@ use led::LedTask;
 use microbit::Board;
 use panic_rtt_target as _;
 use rtt_target::{rprintln, rtt_init_print};
-use timer::Ticker;
+use time::Ticker;
 
 #[entry]
 fn main() -> ! {

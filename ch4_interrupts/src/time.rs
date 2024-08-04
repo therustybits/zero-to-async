@@ -96,7 +96,7 @@ fn RTC0() {
         let rtc = rm_rtc.as_mut().unwrap();
         if rtc.is_event_triggered(RtcInterrupt::Overflow) {
             rtc.reset_event(RtcInterrupt::Overflow);
-            TICKER.ovf_count.fetch_add(1, Ordering::Release);
+            TICKER.ovf_count.fetch_add(1, Ordering::Relaxed);
         }
         // Clearing the event flag can take up to 4 clock cycles:
         // (see nRF52833 Product Specification section 6.1.8)

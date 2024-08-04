@@ -10,7 +10,7 @@ use crate::{
     button::ButtonDirection,
     channel::Receiver,
     future::{OurFuture, Poll},
-    timer::Timer,
+    time::Timer,
 };
 
 enum LedState {
@@ -57,7 +57,7 @@ impl<'a> LedTask<'a> {
         rprintln!("Blinking LED {}", self.active_col);
         #[cfg(feature = "trigger-overflow")]
         {
-            use crate::timer::Ticker;
+            use crate::time::Ticker;
             let time = Ticker::now();
             rprintln!(
                 "Time: 0x{:x} ticks, {} ms",
