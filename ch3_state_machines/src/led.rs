@@ -1,5 +1,3 @@
-use core::cell::Cell;
-
 use embedded_hal::digital::{OutputPin, StatefulOutputPin};
 use fugit::ExtU64;
 use microbit::{
@@ -10,6 +8,7 @@ use rtt_target::rprintln;
 
 use crate::{
     button::ButtonDirection,
+    channel::Receiver,
     time::{Ticker, Timer},
 };
 
@@ -23,21 +22,21 @@ pub struct LedTask<'a> {
     active_col: usize,
     ticker: &'a Ticker,
     state: LedState<'a>,
-    event: &'a Cell<Option<ButtonDirection>>,
+    receiver: Receiver<'a, ButtonDirection>,
 }
 
 impl<'a> LedTask<'a> {
     pub fn new(
         col: [Pin<Output<PushPull>>; NUM_COLS],
         ticker: &'a Ticker,
-        event: &'a Cell<Option<ButtonDirection>>,
+        receiver: Receiver<'a, ButtonDirection>,
     ) -> Self {
         Self {
             col,
             active_col: 0,
             ticker,
             state: LedState::Toggle,
-            event,
+            receiver,
         }
     }
 
@@ -67,7 +66,7 @@ impl<'a> LedTask<'a> {
                 if timer.is_ready() {
                     self.state = LedState::Toggle;
                 }
-                if let Some(direction) = self.event.take() {
+                if let Some(direction) = self.receiver.receive() {
                     self.shift(direction);
                     self.state = LedState::Toggle;
                 }

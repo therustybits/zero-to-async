@@ -2,12 +2,12 @@
 #![no_main]
 
 mod button;
+mod channel;
 mod led;
 mod time;
 
-use core::cell::Cell;
-
 use button::{ButtonDirection, ButtonTask};
+use channel::Channel;
 use cortex_m_rt::entry;
 use embedded_hal::digital::OutputPin;
 use led::LedTask;
@@ -26,10 +26,10 @@ fn main() -> ! {
     let button_l = board.buttons.button_a.degrade();
     let button_r = board.buttons.button_b.degrade();
 
-    let button_event: Cell<Option<ButtonDirection>> = Cell::new(None);
-    let mut led_task = LedTask::new(col, &button_event);
-    let mut button_l_task = ButtonTask::new(button_l, ButtonDirection::Left, &button_event);
-    let mut button_r_task = ButtonTask::new(button_r, ButtonDirection::Right, &button_event);
+    let channel: Channel<ButtonDirection> = Channel::new();
+    let mut led_task = LedTask::new(col, channel.get_receiver());
+    let mut button_l_task = ButtonTask::new(button_l, ButtonDirection::Left, channel.get_sender());
+    let mut button_r_task = ButtonTask::new(button_r, ButtonDirection::Right, channel.get_sender());
 
     rprintln!("Running tasks...");
     loop {

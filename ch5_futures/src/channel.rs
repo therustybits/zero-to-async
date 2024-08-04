@@ -23,7 +23,10 @@ impl<T> Channel<T> {
     }
 
     pub fn get_receiver(&self) -> Receiver<T> {
-        Receiver { channel: &self }
+        Receiver {
+            channel: &self,
+            state: ReceiverState::Init,
+        }
     }
 
     fn send(&self, item: T) {
@@ -33,11 +36,12 @@ impl<T> Channel<T> {
         }
     }
 
-    fn receive(&self, task_id: usize) -> Option<T> {
-        if self.task_id.get().is_none() {
-            self.task_id.replace(Some(task_id));
-        }
+    fn receive(&self) -> Option<T> {
         self.item.take()
+    }
+
+    fn register(&self, task_id: usize) {
+        self.task_id.replace(Some(task_id));
     }
 }
 
@@ -51,16 +55,29 @@ impl<T> Sender<'_, T> {
     }
 }
 
+enum ReceiverState {
+    Init,
+    Wait,
+}
+
 pub struct Receiver<'a, T> {
     channel: &'a Channel<T>,
+    state: ReceiverState,
 }
 
 impl<T> OurFuture for Receiver<'_, T> {
     type Output = T;
     fn poll(&mut self, task_id: usize) -> Poll<Self::Output> {
-        match self.channel.receive(task_id) {
-            Some(item) => Poll::Ready(item),
-            None => Poll::Pending,
+        match self.state {
+            ReceiverState::Init => {
+                self.channel.register(task_id);
+                self.state = ReceiverState::Wait;
+                Poll::Pending
+            }
+            ReceiverState::Wait => match self.channel.receive() {
+                Some(item) => Poll::Ready(item),
+                None => Poll::Pending,
+            },
         }
     }
 }

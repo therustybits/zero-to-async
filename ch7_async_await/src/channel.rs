@@ -24,7 +24,10 @@ impl<T> Channel<T> {
     }
 
     pub fn get_receiver(&self) -> Receiver<T> {
-        Receiver { channel: &self }
+        Receiver {
+            channel: &self,
+            state: ReceiverState::Init,
+        }
     }
 
     fn send(&self, item: T) {
@@ -36,11 +39,12 @@ impl<T> Channel<T> {
         }
     }
 
-    fn receive(&self, waker: Waker) -> Option<T> {
-        if self.waker.borrow().as_ref().is_none() {
-            self.waker.replace(Some(waker));
-        }
+    fn receive(&self) -> Option<T> {
         self.item.take()
+    }
+
+    fn register(&self, waker: Waker) {
+        self.waker.replace(Some(waker));
     }
 }
 
@@ -54,15 +58,27 @@ impl<T> Sender<'_, T> {
     }
 }
 
+enum ReceiverState {
+    Init,
+    Wait,
+}
 pub struct Receiver<'a, T> {
     channel: &'a Channel<T>,
+    state: ReceiverState,
 }
 
 impl<T> Receiver<'_, T> {
     pub async fn receive(&mut self) -> T {
-        poll_fn(|cx| match self.channel.receive(cx.waker().clone()) {
-            Some(item) => Poll::Ready(item),
-            None => Poll::Pending,
+        poll_fn(|cx| match self.state {
+            ReceiverState::Init => {
+                self.channel.register(cx.waker().clone());
+                self.state = ReceiverState::Wait;
+                Poll::Pending
+            }
+            ReceiverState::Wait => match self.channel.receive() {
+                Some(item) => Poll::Ready(item),
+                None => Poll::Pending,
+            },
         })
         .await
     }
