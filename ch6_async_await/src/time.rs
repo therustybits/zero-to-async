@@ -80,13 +80,13 @@ impl Timer {
     fn register(&self, task_id: usize) {
         let new_deadline = self.end_time.ticks();
         critical_section::with(|cs| {
-            let mut deadlines = WAKE_DEADLINES.borrow_ref_mut(cs);
-            let is_earliest = if let Some((active_deadline, _)) = deadlines.peek() {
-                new_deadline < *active_deadline
+            let mut rm_deadlines = WAKE_DEADLINES.borrow_ref_mut(cs);
+            let is_earliest = if let Some((next_deadline, _)) = rm_deadlines.peek() {
+                new_deadline < *next_deadline
             } else {
                 true
             };
-            if deadlines.push((new_deadline, task_id)).is_err() {
+            if rm_deadlines.push((new_deadline, task_id)).is_err() {
                 // Dropping a deadline in this system can be Very Bad:
                 //  - In the LED task, the LED will stop updating, but may come
                 //    back to life on a button press...
@@ -96,7 +96,7 @@ impl Timer {
             }
             // schedule now if its the earliest
             if is_earliest {
-                schedule_wakeup(deadlines, TICKER.rtc.borrow_ref_mut(cs));
+                schedule_wakeup(rm_deadlines, TICKER.rtc.borrow_ref_mut(cs));
             }
         });
     }
@@ -122,8 +122,8 @@ impl Future for Timer {
     }
 }
 
-pub async fn wait_for(duration: TickDuration) {
-    Timer::new(duration).await
+pub async fn delay(duration: TickDuration) {
+    Timer::new(duration).await;
 }
 
 static TICKER: Ticker = Ticker {
@@ -144,7 +144,7 @@ impl Ticker {
     /// of RTC0 into the `static TICKER`, where it can be accessed by the
     /// interrupt handler function or any `Timer` instance.
     pub fn init(rtc0: RTC0, nvic: &mut NVIC) {
-        let mut rtc = Rtc::new(rtc0, 1).unwrap();
+        let mut rtc = Rtc::new(rtc0, 0).unwrap();
         rtc.enable_counter();
         #[cfg(feature = "trigger-overflow")]
         {
@@ -192,7 +192,7 @@ fn RTC0() {
         let rtc = rm_rtc.as_mut().unwrap();
         if rtc.is_event_triggered(RtcInterrupt::Overflow) {
             rtc.reset_event(RtcInterrupt::Overflow);
-            TICKER.ovf_count.fetch_add(1, Ordering::Release);
+            TICKER.ovf_count.fetch_add(1, Ordering::Relaxed);
         }
         if rtc.is_event_triggered(RtcInterrupt::Compare0) {
             rtc.reset_event(RtcInterrupt::Compare0);

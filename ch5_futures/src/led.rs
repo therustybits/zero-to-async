@@ -39,18 +39,18 @@ impl<'a> LedTask<'a> {
     }
 
     fn shift(&mut self, direction: ButtonDirection) {
-        rprintln!("Button event received");
+        rprintln!("Button press detected..");
         // switch off current/old LED
-        self.col[self.active_col].set_high().unwrap();
+        self.col[self.active_col].set_high().ok();
         self.active_col = match direction {
             ButtonDirection::Left => match self.active_col {
                 0 => 4,
                 _ => self.active_col - 1,
-            },
+            }
             ButtonDirection::Right => (self.active_col + 1) % NUM_COLS,
         };
         // switch off new LED: moving to Toggle will then switch it on
-        self.col[self.active_col].set_high().unwrap();
+        self.col[self.active_col].set_high().ok();
     }
 
     fn toggle(&mut self) {
@@ -78,16 +78,18 @@ impl OurFuture for LedTask<'_> {
                     self.toggle();
                     self.state = LedState::Wait(Timer::new(500.millis()));
                 }
-                LedState::Wait(ref mut timer) => match self.receiver.poll(task_id) {
-                    Poll::Ready(direction) => {
+                LedState::Wait(ref mut timer) => {
+                    if let Poll::Ready(_) = timer.poll(task_id) {
+                        self.state = LedState::Toggle;
+                        continue;
+                    }
+                    if let Poll::Ready(direction) = self.receiver.poll(task_id) {
                         self.shift(direction);
                         self.state = LedState::Toggle;
+                        continue;
                     }
-                    Poll::Pending => match timer.poll(task_id) {
-                        Poll::Ready(_) => self.state = LedState::Toggle,
-                        Poll::Pending => break,
-                    },
-                },
+                    break;
+                }
             }
         }
         Poll::Pending

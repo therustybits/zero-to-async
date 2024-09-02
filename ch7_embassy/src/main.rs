@@ -50,12 +50,15 @@ async fn main(spawner: Spawner) {
     }
 }
 
-fn led_pin(pin: AnyPin) -> Output<'static, AnyPin> {
+fn led_pin(pin: AnyPin) -> Output<'static> {
     Output::new(pin, Level::High, OutputDrive::Standard)
 }
 
 #[embassy_executor::task(pool_size = 2)]
-async fn button_task(pin: AnyPin, direction: ButtonDirection) {
+async fn button_task(
+    pin: AnyPin,
+    direction: ButtonDirection,
+) {
     let mut input = Input::new(pin, Pull::None);
     loop {
         input.wait_for_low().await;

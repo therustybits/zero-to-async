@@ -54,26 +54,27 @@ impl OurFuture for ButtonTask<'_> {
             match self.state {
                 ButtonState::WaitForPress => {
                     self.input.set_ready_state(PinState::Low);
-                    match self.input.poll(task_id) {
-                        Poll::Ready(_) => {
-                            self.sender.send(self.direction);
-                            self.state = ButtonState::Debounce(Timer::new(100.millis()))
-                        }
-                        Poll::Pending => break,
+                    if let Poll::Ready(_) = self.input.poll(task_id) {
+                        self.sender.send(self.direction);
+                        self.state = ButtonState::Debounce(Timer::new(100.millis()));
+                        continue;
                     }
                 }
-                ButtonState::Debounce(ref mut timer) => match timer.poll(task_id) {
-                    Poll::Ready(_) => self.state = ButtonState::WaitForRelease,
-                    Poll::Pending => break,
-                },
+                ButtonState::Debounce(ref mut timer) => {
+                    if let Poll::Ready(_) = timer.poll(task_id) {
+                        self.state = ButtonState::WaitForRelease;
+                        continue;
+                    }
+                }
                 ButtonState::WaitForRelease => {
                     self.input.set_ready_state(PinState::High);
-                    match self.input.poll(task_id) {
-                        Poll::Ready(_) => self.state = ButtonState::WaitForPress,
-                        Poll::Pending => break,
+                    if let Poll::Ready(_) = self.input.poll(task_id) {
+                        self.state = ButtonState::WaitForPress;
+                        continue;
                     }
                 }
             }
+            break;
         }
         Poll::Pending
     }

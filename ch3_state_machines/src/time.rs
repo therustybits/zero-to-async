@@ -5,15 +5,15 @@ type TickInstant = Instant<u64, 1, 32768>;
 type TickDuration = Duration<u64, 1, 32768>;
 
 pub struct Timer<'a> {
-    ticker: &'a Ticker,
     end_time: TickInstant,
+    ticker: &'a Ticker,
 }
 
 impl<'a> Timer<'a> {
     pub fn new(duration: TickDuration, ticker: &'a Ticker) -> Self {
         Self {
-            ticker,
             end_time: ticker.now() + duration,
+            ticker,
         }
     }
 
@@ -35,7 +35,7 @@ pub struct Ticker {
 impl Ticker {
     /// Create on startup to get RTC0 going.
     pub fn new(rtc0: RTC0) -> Self {
-        let rtc = Rtc::new(rtc0, 1).unwrap();
+        let rtc = Rtc::new(rtc0, 0).unwrap();
         rtc.enable_counter();
         Self { rtc }
     }

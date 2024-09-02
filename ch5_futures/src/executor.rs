@@ -18,7 +18,7 @@ static TASK_ID_READY: Q4<usize> = Q4::new();
 pub fn run_tasks(tasks: &mut [&mut dyn OurFuture<Output = ()>]) -> ! {
     // everybody gets one run to start...
     for task_id in 0..tasks.len() {
-        wake_task(task_id);
+        TASK_ID_READY.enqueue(task_id).ok();
     }
 
     loop {

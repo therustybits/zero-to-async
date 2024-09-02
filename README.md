@@ -24,16 +24,16 @@ Also: reading the [Rust book](https://doc.rust-lang.org/book/) is always a good 
 
 Can't get enough `async` embedded Rust? Then I'd encourage you to check out:
 - [`embassy`](https://embassy.dev/)
-- [Dario's 2024 RustNL talk introducing `embassy`](https://youtu.be/H7NtzyP9q8E)
+- [Dario Nieuwenhuis' 2024 RustNL talk introducing `embassy`](https://youtu.be/H7NtzyP9q8E)
 - [`lilos`](https://github.com/cbiffle/lilos/)
-- [Cliff's 2023 OSFC talk introducing `lilos`](https://www.osfc.io/2023/talks/turn-your-code-inside-out-programming-and-debugging-bare-metal-with-async-rust/)
+- [Cliff Biffle's 2023 OSFC talk introducing `lilos`](https://www.osfc.io/2023/talks/turn-your-code-inside-out-programming-and-debugging-bare-metal-with-async-rust/)
 - [Cliff's blog](https://cliffle.com/blog)
 
 If you're looking for a similar bottom-up exploration of `async` Rust but this
-time using the standard library, check out the book "Asynchronous Programming
-in Rust" by Carl Fredrik Samson.
+time using the standard library, check out the book ["Asynchronous Programming
+in Rust" by Carl Fredrik Samson.](https://www.packtpub.com/en-us/product/asynchronous-programming-in-rust-9781805128137)
 
 Any discussion of `async` Rust would be incomplete without mentioning 
 [without.boats blog](https://without.boats/blog/), which is full of great
-articles about the history of `async/await` within the Rust project, Pinning,
-and possible future directions for `async`.
+articles about the history of `async/await` within the Rust project, `async`
+topics like Pinning, and possible future directions for `async`.

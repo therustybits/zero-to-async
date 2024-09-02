@@ -47,7 +47,7 @@ impl Ticker {
     /// of RTC0 into the `static TICKER`, where it can be accessed by the
     /// interrupt handler function or any `TickTimer` instance.
     pub fn init(rtc0: RTC0, nvic: &mut NVIC) {
-        let mut rtc = Rtc::new(rtc0, 1).unwrap();
+        let mut rtc = Rtc::new(rtc0, 0).unwrap();
         rtc.enable_counter();
         #[cfg(feature = "trigger-overflow")]
         {
@@ -101,6 +101,6 @@ fn RTC0() {
         // Clearing the event flag can take up to 4 clock cycles:
         // (see nRF52833 Product Specification section 6.1.8)
         // this should do that...
-        let _ = rtc.get_counter();
+        let _ = rtc.is_event_triggered(RtcInterrupt::Overflow);
     });
 }

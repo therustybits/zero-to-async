@@ -8,7 +8,7 @@ use embedded_hal::{
     delay::DelayNs,
     digital::{InputPin, OutputPin, StatefulOutputPin},
 };
-use microbit::{gpio::NUM_COLS, hal::Timer, Board};
+use microbit::{hal::Timer, Board};
 use panic_rtt_target as _;
 use rtt_target::rtt_init_print;
 
@@ -25,15 +25,14 @@ fn main() -> ! {
     let active_col: usize = 0;
     loop {
         col[active_col].toggle().ok();
-        // hang out here for awhile...
+        // blocking here:
         timer.delay_ms(500);
-        //...then _very_ quickly check the buttons:
+        // will prevent timely detection & response to these:
         if button_l.is_low().unwrap() {
             //..
         }
         if button_r.is_low().unwrap() {
             //..
         }
-        // ^ this will miss events
     }
 }

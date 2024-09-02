@@ -13,6 +13,7 @@ use button::{ButtonDirection, ButtonTask};
 use channel::Channel;
 use cortex_m_rt::entry;
 use embedded_hal::digital::OutputPin;
+use future::OurFuture;
 use led::LedTask;
 use microbit::{hal::gpiote::Gpiote, Board};
 use panic_rtt_target as _;
@@ -36,14 +37,19 @@ fn main() -> ! {
         button_l,
         ButtonDirection::Left,
         channel.get_sender(),
-        &gpiote,
+        &gpiote
     );
     let mut button_r_task = ButtonTask::new(
         button_r,
         ButtonDirection::Right,
         channel.get_sender(),
-        &gpiote,
+        &gpiote
     );
 
-    executor::run_tasks(&mut [&mut led_task, &mut button_l_task, &mut button_r_task]);
+    let mut tasks: [&mut dyn OurFuture<Output = ()>; 3] = [
+        &mut led_task,
+        &mut button_l_task,
+        &mut button_r_task
+    ];
+    executor::run_tasks(&mut tasks);
 }

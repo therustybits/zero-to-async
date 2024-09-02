@@ -19,10 +19,9 @@ pub trait ExtWaker {
 
 impl ExtWaker for Waker {
     fn task_id(&self) -> usize {
-        // When "waker-getters" is stabilized, do something like this instead:
+        // When "waker-getters" is stabilized, do this instead:
         // self.as_raw().data() as usize
-        let num_tasks = NUM_TASKS.load(Ordering::Acquire);
-        for task_id in 0..num_tasks {
+        for task_id in 0..NUM_TASKS.load(Ordering::Relaxed) {
             if get_waker(task_id).will_wake(self) {
                 return task_id;
             }
@@ -34,7 +33,9 @@ impl ExtWaker for Waker {
 fn get_waker(task_id: usize) -> Waker {
     // SAFETY:
     // Data argument interpreted as an integer, not dereferenced
-    unsafe { Waker::from_raw(RawWaker::new(task_id as *const (), &VTABLE)) }
+    unsafe {
+        Waker::from_raw(RawWaker::new(task_id as *const (), &VTABLE))
+    }
 }
 
 static VTABLE: RawWakerVTable = RawWakerVTable::new(clone, wake, wake_by_ref, drop);
@@ -70,7 +71,7 @@ pub fn run_tasks(tasks: &mut [Pin<&mut dyn Future<Output = ()>>]) -> ! {
 
     // everybody gets one run to start...
     for task_id in 0..tasks.len() {
-        wake_task(task_id);
+        TASK_ID_READY.enqueue(task_id).ok();
     }
 
     loop {

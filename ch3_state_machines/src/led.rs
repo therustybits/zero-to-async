@@ -41,18 +41,18 @@ impl<'a> LedTask<'a> {
     }
 
     fn shift(&mut self, direction: ButtonDirection) {
-        rprintln!("Button event received");
+        rprintln!("Button press detected..");
         // switch off current/old LED
-        self.col[self.active_col].set_high().unwrap();
+        self.col[self.active_col].set_high().ok();
         self.active_col = match direction {
             ButtonDirection::Left => match self.active_col {
                 0 => 4,
                 _ => self.active_col - 1,
-            },
+            }
             ButtonDirection::Right => (self.active_col + 1) % NUM_COLS,
         };
         // switch off new LED: moving to Toggle will then switch it on
-        self.col[self.active_col].set_high().unwrap();
+        self.col[self.active_col].set_high().ok();
     }
 
     pub fn poll(&mut self) {

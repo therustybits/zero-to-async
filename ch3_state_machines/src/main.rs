@@ -13,7 +13,7 @@ use embedded_hal::digital::OutputPin;
 use led::LedTask;
 use microbit::Board;
 use panic_rtt_target as _;
-use rtt_target::{rprintln, rtt_init_print};
+use rtt_target::rtt_init_print;
 use time::Ticker;
 
 #[entry]
@@ -41,7 +41,6 @@ fn main() -> ! {
         channel.get_sender(),
     );
 
-    rprintln!("Running tasks...");
     loop {
         led_task.poll();
         button_l_task.poll();

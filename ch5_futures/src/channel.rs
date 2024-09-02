@@ -77,7 +77,7 @@ impl<T> OurFuture for Receiver<'_, T> {
             ReceiverState::Wait => match self.channel.receive() {
                 Some(item) => Poll::Ready(item),
                 None => Poll::Pending,
-            },
+            }
         }
     }
 }

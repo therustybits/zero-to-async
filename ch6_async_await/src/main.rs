@@ -47,13 +47,13 @@ fn main() -> ! {
         button_l,
         ButtonDirection::Left,
         channel.get_sender(),
-        &gpiote,
+        &gpiote
     ));
     let button_r_task = pin!(button_task(
         button_r,
         ButtonDirection::Right,
         channel.get_sender(),
-        &gpiote,
+        &gpiote
     ));
 
     executor::run_tasks(&mut [led_task, button_l_task, button_r_task]);
@@ -70,7 +70,7 @@ async fn led_task(
             direction = receiver.receive().fuse() => {
                 blinker.shift(direction);
             }
-            _ = time::wait_for(500.millis()).fuse() => {}
+            _ = time::delay(500.millis()).fuse() => {}
         }
     }
 }
@@ -85,7 +85,7 @@ async fn button_task(
     loop {
         input.wait_for(PinState::Low).await;
         sender.send(direction);
-        time::wait_for(100.millis()).await;
+        time::delay(100.millis()).await;
         input.wait_for(PinState::High).await;
     }
 }
