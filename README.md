@@ -1,6 +1,6 @@
 # Zero to Async
 
-This is the companion repository for the YouTube video, where we walk through
+This is the companion repository for the [YouTube video](https://youtu.be/wni5h5vIPhU), where we walk through
 the creation of a basic `async` runtime in embedded Rust from the ground up.
 The code for the end of each chapter is in its respective directory.
 
