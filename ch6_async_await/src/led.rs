@@ -28,7 +28,7 @@ impl LedRow {
         self.col[self.active_col].set_high().ok();
         self.active_col = match direction {
             ButtonDirection::Left => match self.active_col {
-                0 => 4,
+                0 => NUM_COLS - 1,
                 _ => self.active_col - 1,
             }
             ButtonDirection::Right => (self.active_col + 1) % NUM_COLS,
