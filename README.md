@@ -17,7 +17,6 @@ So far only ch7 has been attempted(pure embassy)
 * remove some unwraps?
 * Investigate development with QEMU - I think there is a visual python simulator also ?!
 * defmt logging
-* debouncing
 
 
 # Original Description

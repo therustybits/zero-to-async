@@ -6,7 +6,7 @@ mod led;
 
 use button::ButtonDirection;
 use embassy_executor::Spawner;
-use embassy_nrf::gpio::{AnyPin, Input, Level, Output, OutputDrive, Pin, Pull};
+use embassy_nrf::gpio::{ Input, Level, Output, OutputDrive,  Pull};
 use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, channel::Channel};
 use embassy_time::Timer;
 use futures::{select_biased, FutureExt};
@@ -20,20 +20,17 @@ static CHANNEL: Channel<ThreadModeRawMutex, ButtonDirection, 1> = Channel::new()
 async fn main(spawner: Spawner) {
     rtt_init_print!();
     let p = embassy_nrf::init(Default::default());
-
+    
     spawner
-        .spawn(button_task(p.P0_11.degrade(), ButtonDirection::Left))
-        .unwrap();
+        .must_spawn(button_task(Input::new(p.P0_11, Pull::Up), ButtonDirection::Left));
     spawner
-        .spawn(button_task(p.P0_12.degrade(), ButtonDirection::Right))
-        .unwrap();
+        .must_spawn(button_task(Input::new(p.P0_12, Pull::Up), ButtonDirection::Right));
 
-    //let _row1 = led_pin(p.P0_21.degrade());
     let col = [
-        led_pin(p.P0_13.degrade()),
-        led_pin(p.P0_14.degrade()),
-        led_pin(p.P0_15.degrade()),
-        led_pin(p.P0_16.degrade()),
+        Output::new(p.P0_13, Level::High, OutputDrive::Standard),
+        Output::new(p.P0_14, Level::High, OutputDrive::Standard),
+        Output::new(p.P0_15, Level::High, OutputDrive::Standard),
+        Output::new(p.P0_16, Level::High, OutputDrive::Standard),
         //led_pin(p.P0_30.degrade()),
     ];
 
@@ -50,16 +47,11 @@ async fn main(spawner: Spawner) {
     }
 }
 
-fn led_pin(pin: AnyPin) -> Output<'static> {
-    Output::new(pin, Level::High, OutputDrive::Standard)
-}
-
 #[embassy_executor::task(pool_size = 2)]
 async fn button_task(
-    pin: AnyPin,
+    mut input: Input<'static >,
     direction: ButtonDirection,
 ) {
-    let mut input = Input::new(pin, Pull::None);
     loop {
         input.wait_for_low().await;
         CHANNEL.send(direction).await;

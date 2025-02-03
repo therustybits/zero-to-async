@@ -28,6 +28,7 @@
           appimage-run
           segger-jlink
           lld
+          cargo-machete
           #segger-ozone 
         ]; # whatever you need
 
