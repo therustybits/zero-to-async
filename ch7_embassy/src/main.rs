@@ -22,19 +22,19 @@ async fn main(spawner: Spawner) {
     let p = embassy_nrf::init(Default::default());
 
     spawner
-        .spawn(button_task(p.P0_14.degrade(), ButtonDirection::Left))
+        .spawn(button_task(p.P0_11.degrade(), ButtonDirection::Left))
         .unwrap();
     spawner
-        .spawn(button_task(p.P0_23.degrade(), ButtonDirection::Right))
+        .spawn(button_task(p.P0_12.degrade(), ButtonDirection::Right))
         .unwrap();
 
-    let _row1 = led_pin(p.P0_21.degrade());
+    //let _row1 = led_pin(p.P0_21.degrade());
     let col = [
-        led_pin(p.P0_28.degrade()),
-        led_pin(p.P0_11.degrade()),
-        led_pin(p.P0_31.degrade()),
-        led_pin(p.P1_05.degrade()),
-        led_pin(p.P0_30.degrade()),
+        led_pin(p.P0_13.degrade()),
+        led_pin(p.P0_14.degrade()),
+        led_pin(p.P0_15.degrade()),
+        led_pin(p.P0_16.degrade()),
+        //led_pin(p.P0_30.degrade()),
     ];
 
     // LED task:

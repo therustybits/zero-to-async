@@ -3,7 +3,7 @@ use rtt_target::rprintln;
 
 use crate::button::ButtonDirection;
 
-const NUM_COLS: usize = 5;
+const NUM_COLS: usize = 4;
 
 pub struct LedRow {
     col: [Output<'static>; NUM_COLS],

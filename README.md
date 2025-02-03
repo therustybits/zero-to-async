@@ -1,4 +1,26 @@
-# Zero to Async
+# Zero to Async - nRF52840
+
+Based on the Original Description below - But not for the microbit, but rather for the nRF52840 DT board.
+The idea was to migrate the code for the alternative board.
+So far only ch7 has been attempted(pure embassy)
+
+## Features
+* ch7_embassy migrated (with 4 leds)
+* Nix flake added
+* Segger JLink driver added
+
+
+## Additional improvements (ideas):
+* Fix permissions for JLink - requires sudo..., fail to add a rule to cat /etc/udev/rules.d/
+* Update all dependencies to latest
+* The remaining chapters
+* remove some unwraps?
+* Investigate development with QEMU - I think there is a visual python simulator also ?!
+* defmt logging
+* debouncing
+
+
+# Original Description
 
 This is the companion repository for the [YouTube video](https://youtu.be/wni5h5vIPhU), where we walk through
 the creation of a basic `async` runtime in embedded Rust from the ground up.

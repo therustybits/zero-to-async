@@ -13,7 +13,7 @@ embassy-executor = { version = "0.6.0", features = [
     "integrated-timers",
 ] }
 embassy-nrf = { version = "0.2.0", features = [
-    "nrf52833",
+    "nrf52840",
     "time-driver-rtc1",
     "gpiote",
 ] }
@@ -27,6 +27,7 @@ futures = { version = "0.3.30", default-features = false, features = [
 heapless = { version = "0.8.0", features = ["portable-atomic"] }
 panic-rtt-target = "0.1.3"
 rtt-target = "0.5.0"
+#defmt-rtt = "0.4"
 
 [features]
 trigger-overflow = []
