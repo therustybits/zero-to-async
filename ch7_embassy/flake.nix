@@ -39,8 +39,12 @@
 
         shellHook = ''
           echo "Welcome to the $name development shell!"
+          rustup component add rustfmt
+          rustup component add clippy
+          rustup target add thumbv7em-none-eabi
+          # For rust-analyzer 'hover' tooltips to work
+          export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/library"          export PS1='\n\[\033[1;34m\](Rust):\w]\$\[\033[0m\]'
           echo "All necessary libraries and tools are installed."
-          #rustup target add thumbv6m-none-eabi
         '';
       };
     };
