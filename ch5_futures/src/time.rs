@@ -175,7 +175,7 @@ impl Ticker {
                 });
                 let ovf = TICKER.ovf_count.load(Ordering::SeqCst);
                 if ovf_before == ovf {
-                    break ((ovf as u64) << 24 | counter as u64);
+                    break (ovf as u64) << 24 | counter as u64;
                 }
             }
         };

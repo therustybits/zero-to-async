@@ -18,13 +18,13 @@ impl<T> Channel<T> {
         }
     }
 
-    pub fn get_sender(&self) -> Sender<T> {
-        Sender { channel: &self }
+    pub fn get_sender(&self) -> Sender<'_, T> {
+        Sender { channel: self }
     }
 
-    pub fn get_receiver(&self) -> Receiver<T> {
+    pub fn get_receiver(&self) -> Receiver<'_, T> {
         Receiver {
-            channel: &self,
+            channel: self,
             state: ReceiverState::Init,
         }
     }
@@ -77,7 +77,7 @@ impl<T> OurFuture for Receiver<'_, T> {
             ReceiverState::Wait => match self.channel.receive() {
                 Some(item) => Poll::Ready(item),
                 None => Poll::Pending,
-            }
+            },
         }
     }
 }

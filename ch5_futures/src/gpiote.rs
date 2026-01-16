@@ -34,7 +34,9 @@ impl InputChannel {
         channel.input_pin(&pin).toggle().enable_interrupt();
         // SAFETY:
         // We aren't using mask-based critical sections.
-        unsafe { NVIC::unmask(Interrupt::GPIOTE); }
+        unsafe {
+            NVIC::unmask(Interrupt::GPIOTE);
+        }
         Self {
             pin,
             channel_id,

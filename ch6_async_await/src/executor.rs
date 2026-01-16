@@ -33,9 +33,7 @@ impl ExtWaker for Waker {
 fn get_waker(task_id: usize) -> Waker {
     // SAFETY:
     // Data argument interpreted as an integer, not dereferenced
-    unsafe {
-        Waker::from_raw(RawWaker::new(task_id as *const (), &VTABLE))
-    }
+    unsafe { Waker::from_raw(RawWaker::new(task_id as *const (), &VTABLE)) }
 }
 
 static VTABLE: RawWakerVTable = RawWakerVTable::new(clone, wake, wake_by_ref, drop);

@@ -11,12 +11,12 @@ impl<T> Channel<T> {
         }
     }
 
-    pub fn get_sender(&self) -> Sender<T> {
-        Sender { channel: &self }
+    pub fn get_sender(&self) -> Sender<'_, T> {
+        Sender { channel: self }
     }
 
-    pub fn get_receiver(&self) -> Receiver<T> {
-        Receiver { channel: &self }
+    pub fn get_receiver(&self) -> Receiver<'_, T> {
+        Receiver { channel: self }
     }
 
     fn send(&self, item: T) {

@@ -47,7 +47,7 @@ impl<'a> ButtonTask<'a> {
             ButtonState::WaitForPress => {
                 if self.pin.is_low().unwrap() {
                     self.sender.send(self.direction);
-                    self.state = ButtonState::Debounce(Timer::new(100.millis(), &self.ticker));
+                    self.state = ButtonState::Debounce(Timer::new(100.millis(), self.ticker));
                 }
             }
             ButtonState::Debounce(ref timer) => {
